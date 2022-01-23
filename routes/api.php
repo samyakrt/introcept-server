@@ -16,5 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::controller(UserController::class)->group(function() {
-    Route::post('users','registerUser');
+    Route::group(['prefix' => 'users'],function() {
+        Route::post('','registerUser');
+        Route::get('','fetchRecords');
+    });
 });

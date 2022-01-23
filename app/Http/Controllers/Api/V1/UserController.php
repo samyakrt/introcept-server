@@ -16,6 +16,7 @@ class UserController extends Controller
         $this->file_name = public_path('/csv/user.csv');
     }
     /**
+     * store record into csv file
      * @param \App\Http\Requests\Api\V1\RegisterUserRequest $request
      * @return  Illuminate\Http\JsonResponse JsonResponse
      */
@@ -28,10 +29,19 @@ class UserController extends Controller
     }
 
     /**
+     * @return  Illuminate\Http\JsonResponse JsonResponse
+     */
+    public function fetchRecords() {
+        $file = @fopen($this->file_name, 'r');
+        $records = [];
+        return response()->json(compact('records'));
+    }
+
+    /**
      * @param array $record
      * @return void
      */
-    public function storeRecordIntoCsv(array $record) : void
+    private function storeRecordIntoCsv(array $record) : void
     {
         if (!file_exists($this->file_name)) {
             mkdir(public_path('/csv'));

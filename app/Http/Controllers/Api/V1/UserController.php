@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Illuminate\Support\Str;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\RegisterUserRequest;
-use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -35,8 +36,10 @@ class UserController extends Controller
         if (!file_exists($this->file_name)) {
             mkdir(public_path('/csv'));
         }
+        $id = Str::uuid();
         $file = fopen($this->file_name, 'a+');
-        fputcsv($file, $record);
+        
+        fputcsv($file, [$id,...$record]);
         fclose($file);
         return;
     }

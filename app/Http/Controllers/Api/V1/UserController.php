@@ -10,10 +10,26 @@ use App\Http\Requests\Api\V1\RegisterUserRequest;
 class UserController extends Controller
 {
     public $file_name;
+    const HEADERS = [
+        'id',
+        'name',
+        'email',
+        'phone',
+        'address',
+        'nationality',
+        'education_background',
+        'gender',
+        'mode_of_contact'
+    ];
 
     public function __construct()
     {
         $this->file_name = public_path('/csv/user.csv');
+
+        if (!file_exists($this->file_name)) {
+            mkdir(public_path('/csv'));
+            touch($this->file_name);
+        }
     }
     /**
      * store record into csv file
@@ -34,6 +50,10 @@ class UserController extends Controller
     public function fetchRecords() {
         $file = @fopen($this->file_name, 'r');
         $records = [];
+
+        while(($record = fgetcsv($file,1000,',')) !== FALSE) {
+            $records[] = array_combine(self::HEADERS,$record);
+        }
         return response()->json(compact('records'));
     }
 
@@ -43,14 +63,21 @@ class UserController extends Controller
      */
     private function storeRecordIntoCsv(array $record) : void
     {
-        if (!file_exists($this->file_name)) {
-            mkdir(public_path('/csv'));
-        }
         $id = Str::uuid();
         $file = fopen($this->file_name, 'a+');
         
         fputcsv($file, [$id,...$record]);
         fclose($file);
         return;
+    }
+
+    private function appendHeaderIntoCsv()  : void{
+        $file = fopen($this->file_name,'w+');
+        $headers = self::HEADERS;
+
+        fputcsv($file,$headers);
+        fclose($file);
+        return;
+
     }
 }

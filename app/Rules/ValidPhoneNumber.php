@@ -1,18 +1,25 @@
 <?php
 namespace App\Rules;
+
 use Illuminate\Contracts\Validation\Rule;
 
 class ValidPhoneNumber implements Rule
 {
-    /**
-     * Create a new rule instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    const VALID_NUMBERS = [
+        984,
+        985,
+        986,
+        974,
+        975,
+        980,
+        981,
+        982,
+        961,
+        962,
+        988,
+        972,
+        963
+    ];
 
     /**
      * Determine if the validation rule passes.
@@ -23,8 +30,8 @@ class ValidPhoneNumber implements Rule
      */
     public function passes($attribute, $value)
     {
-        $first_three = substr($value,0,3);
-        if(in_array($first_three,config('services.sms.valid_numbers'))) {
+        $first_three_numbers = substr($value, 0, 3);
+        if (in_array($first_three_numbers, self::VALID_NUMBERS)) {
             return true;
         }
         return false;
@@ -37,6 +44,6 @@ class ValidPhoneNumber implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'Invalid Phone Number.';
     }
 }

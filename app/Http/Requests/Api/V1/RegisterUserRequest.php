@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use App\Rules\ValidPhoneNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterUserRequest extends FormRequest
@@ -26,9 +27,12 @@ class RegisterUserRequest extends FormRequest
         return [
             'name' => ['required'],
             'email' => ['required','email'],
-            'phone' => ['required'],
-            ''
-
+            'phone' => ['required',new ValidPhoneNumber],
+            'address' => ['required','min:10'],
+            'nationality' => ['required'],
+            'education_background' => ['required','min:10'],
+            'gender' => ['required'],
+            'mode_of_contact' => ['required']
         ];
     }
 }
